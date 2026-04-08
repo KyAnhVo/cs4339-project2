@@ -14,9 +14,7 @@ const app = express();
 // define these in env and import in this file
 const port = process.env.PORT || 3001;
 const mongoUrl =
-  process.env.MONGO_URL ||
-  "mongodb+srv://lenob0dy:101@LeNob0dY@project2.43uwkqm.mongodb.net/?appName=Project2";
-
+  process.env.MONGO_URL ||"mongodb://127.0.0.1/project2";
 // Enable CORS for frontend running on a different port
 app.use(cors());
 
@@ -76,7 +74,7 @@ app.get("/user/:id", async (req, res) => {
     // 2. If the user does not exist, return 404.
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).send("User not found");
+      return res.status(400).send("User not found");
     }
 
     // 3. Return only the fields required by the frontend.
@@ -102,12 +100,22 @@ app.get("/photosOfUser/:id", async (req, res) => {
     const userId = req.params.id;
 
     if (!isValidObjectId(userId)) {
+      console.log("Err here");
       return res.status(400).send("Invalid user id");
+    }
+    const usr = await User.findById(userId);
+    if (!usr) {
+      console.log("Err there");
+      return res.status(400).send("Invalid user id")
     }
 
     // TODO:
     // 1. Find all photos whose user_id matches userId.
+
     const photos = await Photo.find({ user_id: userId });
+    if (!photos) {
+      return res.send([]);
+    }
 
     // 2. Fetch all users from MongoDB.
     const users = await User.find();
@@ -138,7 +146,6 @@ app.get("/photosOfUser/:id", async (req, res) => {
             _id: comment.id,
             date_time: comment.date_time,
             comment: comment.comment,
-            photo_id: photo.id.toString(),
             user: userLookup.get(comment.user_id.toString()),
           };
         }),

@@ -23,7 +23,7 @@ import SchemaInfo from "./schema/schemaInfo.js";
 mongoose.Promise = bluebird;
 mongoose.set("strictQuery", false);
 mongoose.connect(
-  "mongodb+srv://lenob0dy:101@LeNob0dY@project2.43uwkqm.mongodb.net/project2?appName=Project2",
+  "mongodb://127.0.0.1/project2",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
